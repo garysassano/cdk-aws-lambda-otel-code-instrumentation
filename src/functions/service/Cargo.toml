@@ -1,0 +1,47 @@
+[package]
+name = "service"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "frontend"
+path = "src/frontend/main.rs"
+
+[[bin]]
+name = "backend"
+path = "src/backend/main.rs"
+
+[dependencies]
+# AWS Labs
+aws-config = { workspace = true }
+aws_lambda_events = { workspace = true }
+aws-sdk-dynamodb = "1.43.0"
+lambda_runtime = { workspace = true }
+
+# Lambda Utils
+lambda-lw-http-router = { workspace = true }
+lambda-otel-lite = { workspace = true }
+
+# OTel Instrumentation
+opentelemetry = { workspace = true }
+opentelemetry-http = { workspace = true }
+otlp-sigv4-client = { workspace = true }
+tracing-opentelemetry = { workspace = true }
+
+# Others
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+chrono = { version = "0.4", features = ["serde"] }
+http = { workspace = true }
+lazy_static = "1.5.0"
+reqwest = { workspace = true }
+reqwest-middleware = "0.4.1"
+reqwest-tracing = { version = "0.5.6", features = ["opentelemetry_0_27"] }
+serde = { workspace = true }
+serde_dynamo = { version = "4.2.14", features = ["aws-sdk-dynamodb+1"] }
+serde_json = { workspace = true }
+sha2 = "0.10.8"
+tera = "1.20.0"
+thiserror = "1.0.50"
+tokio = { workspace = true }
+tracing = { workspace = true }
