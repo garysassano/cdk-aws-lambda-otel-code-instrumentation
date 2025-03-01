@@ -7,16 +7,12 @@ edition = "2021"
 name = "log_processor"
 path = "src/log_processor.rs"
 
-[[bin]]
-name = "span_processor"
-path = "src/span_processor.rs"
-
 [dependencies]
 # AWS Labs
 aws-config = { version = "1.5.11", features = ["behavior-version-latest"] }
 aws-credential-types = "1.2.1"
-aws_lambda_events = { version = "0.16.0", default-features = false, features = ["cloudwatch_logs"] }
 aws-sdk-secretsmanager = { version = "1.55.0", features = ["behavior-version-latest"] }
+aws_lambda_events = { version = "0.16.0", default-features = false, features = ["cloudwatch_logs", "kinesis"] }
 lambda_runtime = { version = "0.13.0", features = ["anyhow", "tracing", "opentelemetry"] }
 
 # Lambda Utils
@@ -41,6 +37,7 @@ tracing = { version = "0.1", features = ["log"] }
 url = "2.5.4"
 
 [dev-dependencies]
-wiremock = "0.6"
+chrono = "0.4.39"
 mockito = "1.6"
 tokio = { version = "1.42", features = ["full"] }
+wiremock = "0.6"
