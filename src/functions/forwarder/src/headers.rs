@@ -113,18 +113,16 @@ impl LogRecordHeaders {
     }
 
     /// Helper method to extract and normalize custom headers from a HashMap
-    fn extract_headers(&mut self, headers: &Option<HashMap<String, String>>) -> Result<()> {
-        if let Some(headers) = headers {
-            for (key, value) in headers {
-                let normalized_key = key.to_lowercase();
-                let header_name = HeaderName::from_str(&normalized_key)
-                    .with_context(|| format!("Invalid header name: {}", normalized_key))?;
-                let header_value = HeaderValue::from_str(value).with_context(|| {
-                    format!("Invalid header value for {}: {}", normalized_key, value)
-                })?;
+    fn extract_headers(&mut self, headers: &HashMap<String, String>) -> Result<()> {
+        for (key, value) in headers {
+            let normalized_key = key.to_lowercase();
+            let header_name = HeaderName::from_str(&normalized_key)
+                .with_context(|| format!("Invalid header name: {}", normalized_key))?;
+            let header_value = HeaderValue::from_str(value).with_context(|| {
+                format!("Invalid header value for {}: {}", normalized_key, value)
+            })?;
 
-                self.0.insert(header_name, header_value);
-            }
+            self.0.insert(header_name, header_value);
         }
         Ok(())
     }
