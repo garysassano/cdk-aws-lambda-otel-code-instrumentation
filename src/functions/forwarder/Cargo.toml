@@ -21,7 +21,7 @@ otlp-sigv4-client = "0.3.0"
 otlp-stdout-client = "0.3.0"
 
 # OTel Instrumentation
-opentelemetry = { version = "0.27.1", features = ["trace"] }
+opentelemetry = { version = "0.28.0", features = ["trace"] }
 
 # Others
 anyhow = "1.0.94"
