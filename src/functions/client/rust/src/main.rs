@@ -1,10 +1,13 @@
 use aws_lambda_events::apigw::ApiGatewayV2httpRequest;
-use serde_json::{json, Value};
-use lambda_runtime::{service_fn, Runtime, Error, LambdaEvent};
-use std::sync::Arc;
 use lambda_lw_http_router::{define_router, route};
-use lambda_otel_utils::{HttpTracerProviderBuilder, OpenTelemetrySubscriberBuilder, OpenTelemetryLayer, OpenTelemetryFaasTrigger};
+use lambda_otel_utils::{
+    HttpTracerProviderBuilder, OpenTelemetryFaasTrigger, OpenTelemetryLayer,
+    OpenTelemetrySubscriberBuilder,
+};
+use lambda_runtime::{service_fn, Error, LambdaEvent, Runtime};
 use reqwest::Client;
+use serde_json::{json, Value};
+use std::sync::Arc;
 
 // Define your application state
 #[derive(Clone)]
@@ -55,11 +58,12 @@ async fn main() -> Result<(), Error> {
         .with_env_filter(true)
         .with_tracer_provider(tracer_provider.clone())
         .with_service_name("hello-world")
+        .with_json_format(true)
         .init()?;
 
     let state = Arc::new(AppState {});
     let router = Arc::new(RouterBuilder::from_registry().build());
-    
+
     let lambda = move |event: LambdaEvent<ApiGatewayV2httpRequest>| {
         let state = Arc::clone(&state);
         let router = Arc::clone(&router);

@@ -225,9 +225,9 @@ export class MyStack extends Stack {
         RUST_LOG: "info",
         OTEL_SERVICE_NAME: "client-rust-lambda",
         OTEL_EXPORTER_OTLP_ENDPOINT,
+        OTEL_EXPORTER_OTLP_HEADERS,
         OTEL_EXPORTER_OTLP_PROTOCOL,
         OTEL_EXPORTER_OTLP_COMPRESSION,
-        OTEL_EXPORTER_OTLP_HEADERS,
       },
     });
     const clientRustLambdaUrl = clientRustLambda.addFunctionUrl({
