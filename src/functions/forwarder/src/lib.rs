@@ -2,7 +2,6 @@ pub mod collectors;
 pub mod headers;
 pub mod processing;
 pub mod telemetry;
-pub mod otlp;
 
 // Re-export commonly used types
 pub use collectors::Collectors;

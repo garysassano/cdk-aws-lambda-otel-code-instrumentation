@@ -1,4 +1,4 @@
-//! Header management for the Lambda OTLP forwarder.
+//! Header management for the Serverless OTLP forwarder.
 //!
 //! This module handles two types of headers:
 //! - Log record specific headers for forwarding requests
@@ -113,18 +113,19 @@ impl LogRecordHeaders {
     }
 
     /// Helper method to extract and normalize custom headers from a HashMap
-    fn extract_headers(&mut self, headers: &HashMap<String, String>) -> Result<()> {
-        for (key, value) in headers {
-            let normalized_key = key.to_lowercase();
-            let header_name = HeaderName::from_str(&normalized_key)
-                .with_context(|| format!("Invalid header name: {}", normalized_key))?;
-            let header_value = HeaderValue::from_str(value).with_context(|| {
-                format!("Invalid header value for {}: {}", normalized_key, value)
-            })?;
+    fn extract_headers(&mut self, headers: &Option<HashMap<String, String>>) -> Result<()> {
+        if let Some(headers) = headers {
+            for (key, value) in headers {
+                let normalized_key = key.to_lowercase();
+                let header_name = HeaderName::from_str(&normalized_key)
+                    .with_context(|| format!("Invalid header name: {}", normalized_key))?;
+                let header_value = HeaderValue::from_str(value).with_context(|| {
+                    format!("Invalid header value for {}: {}", normalized_key, value)
+                })?;
 
-            self.0.insert(header_name, header_value);
+                self.0.insert(header_name, header_value);
+            }
         }
-
         Ok(())
     }
 
@@ -173,7 +174,7 @@ mod tests {
             endpoint: "http://example.com".to_string(),
             method: "POST".to_string(),
             payload: serde_json::json!({"test": "data"}),
-            headers,
+            headers: Some(headers),
             content_type: "application/json".to_string(),
             content_encoding: Some("gzip".to_string()),
             base64: None,
@@ -307,7 +308,7 @@ mod tests {
             endpoint: "http://example.com".to_string(),
             method: "POST".to_string(),
             payload: serde_json::json!({"test": "data"}),
-            headers,
+            headers: Some(headers),
             content_type: "application/json".to_string(),
             content_encoding: None,
             base64: None,
@@ -330,7 +331,7 @@ mod tests {
             endpoint: "http://example.com".to_string(),
             method: "POST".to_string(),
             payload: serde_json::json!({"test": "data"}),
-            headers,
+            headers: Some(headers),
             content_type: "application/json".to_string(),
             content_encoding: None,
             base64: None,

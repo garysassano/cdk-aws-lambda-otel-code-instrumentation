@@ -1,4 +1,4 @@
-//! Collector configuration management for the Lambda OTLP forwarder.
+//! Collector configuration management for the Serverless OTLP forwarder.
 //!
 //! This module handles:
 //! - Loading collector configurations from AWS Secrets Manager
@@ -18,9 +18,13 @@ use std::sync::OnceLock;
 use std::time::{Duration, Instant};
 use tracing::instrument;
 use url::Url;
+use std::sync::atomic::{AtomicU64, Ordering};
 
 /// Global storage for cached collectors configuration
 static COLLECTORS: OnceLock<Arc<CollectorsCache>> = OnceLock::new();
+
+/// Last time we emitted a warning about AWS endpoints
+static LAST_WARNING: AtomicU64 = AtomicU64::new(0);
 
 /// Represents a single collector configuration.
 /// Each collector has a name, endpoint, and optional authentication details.
@@ -198,11 +202,42 @@ impl Collector {
         Ok(base.to_string())
     }
 
+    fn should_emit_warning() -> bool {
+        let now = Instant::now().elapsed().as_secs();
+        let last = LAST_WARNING.load(Ordering::Relaxed);
+        if now - last > 600 {  // Warn once every 10 minutes
+            LAST_WARNING.store(now, Ordering::Relaxed);
+            true
+        } else {
+            false
+        }
+    }
+
     /// Checks if a log group should be excluded based on the collector's exclude pattern
+    /// or if it's aws/spans being sent to an AWS endpoint (to prevent infinite loops)
     pub(crate) fn should_exclude(&self, log_group: &str) -> bool {
+        // Check explicit exclusion pattern first
         if let Some(pattern) = &self.exclude {
             return pattern.is_match(log_group);
         }
+
+        // Prevent infinite loops: exclude aws/spans when endpoint is AWS
+        if log_group == "aws/spans" {
+            if let Ok(base) = Url::parse(&self.endpoint) {
+                if base.host_str().map_or(false, |h| h.ends_with(".amazonaws.com")) {
+                    if Self::should_emit_warning() {
+                        tracing::warn!(
+                            "Collector endpoint {} is an AWS OTLP endpoint and aws/spans log group is not excluded. \
+                            This could cause an infinite loop. Please configure the aws/spans exclusion in your \
+                            collector configuration to prevent this.",
+                            self.endpoint
+                        );
+                    }
+                    return true;
+                }
+            }
+        }
+
         false
     }
 }

@@ -79,7 +79,7 @@ mod tests {
             endpoint: "http://example.com".to_string(),
             method: "POST".to_string(),
             payload: json!({"test": "data"}),
-            headers: std::collections::HashMap::new(),
+            headers: Some(std::collections::HashMap::new()),
             content_type: "application/json".to_string(),
             content_encoding: Some("gzip".to_string()),
             base64: None,
