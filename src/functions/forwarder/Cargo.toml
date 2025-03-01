@@ -9,9 +9,9 @@ path = "src/log_processor.rs"
 
 [dependencies]
 # AWS Labs
-aws-config = { version = "1.5.11", features = ["behavior-version-latest"] }
+aws-config = { version = "1.5.17", features = ["behavior-version-latest"] }
 aws-credential-types = "1.2.1"
-aws-sdk-secretsmanager = { version = "1.55.0", features = ["behavior-version-latest"] }
+aws-sdk-secretsmanager = { version = "1.64.0", features = ["behavior-version-latest"] }
 aws_lambda_events = { version = "0.16.0", default-features = false, features = ["cloudwatch_logs", "kinesis"] }
 lambda_runtime = { version = "0.13.0", features = ["anyhow", "tracing", "opentelemetry"] }
 
