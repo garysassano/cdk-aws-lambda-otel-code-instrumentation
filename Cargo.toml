@@ -25,6 +25,8 @@ tokio = { version = "1", features = ["full"] }
 # OpenTelemetry and tracing
 lambda-otel-lite = "0.10.2"
 lambda-lw-http-router = "0.3.0"
+otlp-sigv4-client = "0.10.0"
+otlp-stdout-client = "0.4.1"
 opentelemetry = { version = "0.28.0", features = ["trace"] }
 opentelemetry-aws = { version = "0.16.0", features = ["detector-aws-lambda"] }
 opentelemetry-http = { version = "0.28.0" }

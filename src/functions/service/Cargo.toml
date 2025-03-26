@@ -25,6 +25,7 @@ lambda-otel-lite = { workspace = true }
 # OTel Instrumentation
 opentelemetry = { workspace = true }
 opentelemetry-http = { workspace = true }
+otlp-sigv4-client = { workspace = true }
 tracing-opentelemetry = { workspace = true }
 
 # Others

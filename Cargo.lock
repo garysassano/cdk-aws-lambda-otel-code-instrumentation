@@ -796,7 +796,7 @@ dependencies = [
  "aws_lambda_events",
  "lambda-lw-http-router",
  "lambda-otel-lite",
- "lambda_runtime 0.13.0",
+ "lambda_runtime",
  "opentelemetry 0.28.0",
  "rand 0.9.0",
  "serde_json",
@@ -1066,6 +1066,39 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e13624c2627564efccf4934284bdd98cbaa14e79b0b5a141218e507b3a823456"
 dependencies = [
  "percent-encoding",
+]
+
+[[package]]
+name = "forwarder"
+version = "1.0.0"
+dependencies = [
+ "anyhow",
+ "aws-config",
+ "aws-credential-types",
+ "aws-sdk-secretsmanager",
+ "aws_lambda_events",
+ "base64 0.22.1",
+ "chrono",
+ "flate2",
+ "futures",
+ "lambda-otel-lite",
+ "lambda_runtime",
+ "mockito",
+ "opentelemetry 0.28.0",
+ "opentelemetry-otlp",
+ "opentelemetry-proto",
+ "opentelemetry_sdk 0.28.0",
+ "otlp-sigv4-client",
+ "otlp-stdout-client",
+ "prost",
+ "regex",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "url",
+ "wiremock",
 ]
 
 [[package]]
@@ -1812,7 +1845,7 @@ checksum = "95052fc87841a46117b2da48888dfcab776961b62cbeb51db3430bc61d564de0"
 dependencies = [
  "aws_lambda_events",
  "ctor",
- "lambda_runtime 0.13.0",
+ "lambda_runtime",
  "lazy_static",
  "opentelemetry 0.27.1",
  "opentelemetry-http 0.27.0",
@@ -1845,7 +1878,7 @@ dependencies = [
  "futures-executor",
  "futures-util",
  "lambda-extension",
- "lambda_runtime 0.13.0",
+ "lambda_runtime",
  "opentelemetry 0.28.0",
  "opentelemetry_sdk 0.28.0",
  "otlp-stdout-span-exporter",
@@ -1858,86 +1891,6 @@ dependencies = [
  "tracing-opentelemetry 0.29.0",
  "tracing-subscriber",
  "urlencoding",
-]
-
-[[package]]
-name = "lambda-otel-utils"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "41ea589793eadc2d7647d481a7d4ae419a13bea1364963faa4d4db03777afcde"
-dependencies = [
- "lambda_runtime 0.11.3",
- "opentelemetry 0.28.0",
- "opentelemetry-aws",
- "opentelemetry-http 0.28.0",
- "opentelemetry-otlp 0.28.0",
- "opentelemetry-semantic-conventions 0.28.0",
- "opentelemetry_sdk 0.28.0",
- "otlp-stdout-client 0.4.1",
- "pin-project",
- "rustc_version_runtime",
- "thiserror 1.0.69",
- "tokio",
- "tracing",
- "tracing-opentelemetry 0.29.0",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "lambda-otlp-forwarder"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "aws-config",
- "aws-credential-types",
- "aws-sdk-secretsmanager",
- "aws_lambda_events",
- "base64 0.22.1",
- "chrono",
- "flate2",
- "futures",
- "lambda-otel-utils",
- "lambda_runtime 0.13.0",
- "mockito",
- "opentelemetry 0.28.0",
- "otlp-sigv4-client",
- "otlp-stdout-client 0.3.0",
- "regex",
- "reqwest",
- "serde",
- "serde_json",
- "tokio",
- "tracing",
- "url",
- "wiremock",
-]
-
-[[package]]
-name = "lambda_runtime"
-version = "0.11.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9be8f0e7a5db270feb93a7a3593c22a4c5fb8e8f260f5f490e0c3a5ffeb009db"
-dependencies = [
- "async-stream",
- "base64 0.22.1",
- "bytes",
- "futures",
- "http 1.3.1",
- "http-body 1.0.1",
- "http-body-util",
- "http-serde",
- "hyper 1.6.0",
- "hyper-util",
- "lambda_runtime_api_client",
- "pin-project",
- "serde",
- "serde_json",
- "serde_path_to_error",
- "tokio",
- "tokio-stream",
- "tower 0.4.13",
- "tower-layer",
- "tracing",
 ]
 
 [[package]]
@@ -1958,7 +1911,7 @@ dependencies = [
  "hyper 1.6.0",
  "hyper-util",
  "lambda_runtime_api_client",
- "opentelemetry-semantic-conventions 0.14.0",
+ "opentelemetry-semantic-conventions",
  "pin-project",
  "serde",
  "serde_json",
@@ -2240,18 +2193,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "opentelemetry-aws"
-version = "0.16.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b128be0f8e3e1f04e762572b484b0555c6a7410e299b181dd27727fd6fe5de0c"
-dependencies = [
- "opentelemetry 0.28.0",
- "opentelemetry-semantic-conventions 0.28.0",
- "opentelemetry_sdk 0.28.0",
- "tracing",
-]
-
-[[package]]
 name = "opentelemetry-http"
 version = "0.27.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2261,7 +2202,6 @@ dependencies = [
  "bytes",
  "http 1.3.1",
  "opentelemetry 0.27.1",
- "reqwest",
 ]
 
 [[package]]
@@ -2280,28 +2220,6 @@ dependencies = [
 
 [[package]]
 name = "opentelemetry-otlp"
-version = "0.27.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91cf61a1868dacc576bf2b2a1c3e9ab150af7272909e80085c3173384fe11f76"
-dependencies = [
- "async-trait",
- "futures-core",
- "http 1.3.1",
- "opentelemetry 0.27.1",
- "opentelemetry-http 0.27.0",
- "opentelemetry-proto 0.27.0",
- "opentelemetry_sdk 0.27.1",
- "prost",
- "reqwest",
- "serde_json",
- "thiserror 1.0.69",
- "tokio",
- "tonic",
- "tracing",
-]
-
-[[package]]
-name = "opentelemetry-otlp"
 version = "0.28.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5bef114c6d41bea83d6dc60eb41720eedd0261a67af57b66dd2b84ac46c01d91"
@@ -2311,27 +2229,13 @@ dependencies = [
  "http 1.3.1",
  "opentelemetry 0.28.0",
  "opentelemetry-http 0.28.0",
- "opentelemetry-proto 0.28.0",
+ "opentelemetry-proto",
  "opentelemetry_sdk 0.28.0",
  "prost",
  "reqwest",
  "serde_json",
  "thiserror 2.0.12",
  "tracing",
-]
-
-[[package]]
-name = "opentelemetry-proto"
-version = "0.27.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a6e05acbfada5ec79023c85368af14abd0b307c015e9064d249b2a950ef459a6"
-dependencies = [
- "hex",
- "opentelemetry 0.27.1",
- "opentelemetry_sdk 0.27.1",
- "prost",
- "serde",
- "tonic",
 ]
 
 [[package]]
@@ -2357,12 +2261,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f9ab5bd6c42fb9349dcf28af2ba9a0667f697f9bdcca045d39f2cec5543e2910"
 
 [[package]]
-name = "opentelemetry-semantic-conventions"
-version = "0.28.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fb3a2f78c2d55362cd6c313b8abedfbc0142ab3c2676822068fd2ab7d51f9b7"
-
-[[package]]
 name = "opentelemetry_sdk"
 version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2376,11 +2274,7 @@ dependencies = [
  "opentelemetry 0.27.1",
  "percent-encoding",
  "rand 0.8.5",
- "serde_json",
  "thiserror 1.0.69",
- "tokio",
- "tokio-stream",
- "tracing",
 ]
 
 [[package]]
@@ -2406,9 +2300,9 @@ dependencies = [
 
 [[package]]
 name = "otlp-sigv4-client"
-version = "0.3.0"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "69ec56fefe100ea9427b4ebda8b1a535fc0de1ddccece42cc7a4ebb9ae6c2002"
+checksum = "441ce1652468677ee1ed2ffb21bcd82c8368a6d23f845a03ab0c75020047a7ba"
 dependencies = [
  "async-trait",
  "aws-credential-types",
@@ -2416,33 +2310,10 @@ dependencies = [
  "aws-smithy-runtime-api",
  "bytes",
  "http 1.3.1",
- "opentelemetry 0.27.1",
- "opentelemetry-http 0.27.0",
+ "opentelemetry 0.28.0",
+ "opentelemetry-http 0.28.0",
  "reqwest",
  "thiserror 2.0.12",
- "tracing",
-]
-
-[[package]]
-name = "otlp-stdout-client"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "13a71f88806c37afaf8709e5dc97be82bac6ba6fda6a2442d504ffc2f4bf66b0"
-dependencies = [
- "async-trait",
- "base64 0.21.7",
- "bytes",
- "flate2",
- "http 1.3.1",
- "opentelemetry 0.27.1",
- "opentelemetry-http 0.27.0",
- "opentelemetry-otlp 0.27.0",
- "opentelemetry_sdk 0.27.1",
- "serde",
- "serde_json",
- "thiserror 2.0.12",
- "tokio",
- "tracing",
 ]
 
 [[package]]
@@ -2458,7 +2329,7 @@ dependencies = [
  "http 1.3.1",
  "opentelemetry 0.28.0",
  "opentelemetry-http 0.28.0",
- "opentelemetry-otlp 0.28.0",
+ "opentelemetry-otlp",
  "opentelemetry_sdk 0.28.0",
  "serde",
  "serde_json",
@@ -2478,7 +2349,7 @@ dependencies = [
  "flate2",
  "futures-util",
  "opentelemetry 0.28.0",
- "opentelemetry-proto 0.28.0",
+ "opentelemetry-proto",
  "opentelemetry_sdk 0.28.0",
  "prost",
  "serde",
@@ -3026,16 +2897,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rustc_version_runtime"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2dd18cd2bae1820af0b6ad5e54f4a51d0f3fcc53b05f845675074efcc7af071d"
-dependencies = [
- "rustc_version",
- "semver",
-]
-
-[[package]]
 name = "rustix"
 version = "0.38.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3344,10 +3205,11 @@ dependencies = [
  "http 1.3.1",
  "lambda-lw-http-router",
  "lambda-otel-lite",
- "lambda_runtime 0.13.0",
+ "lambda_runtime",
  "lazy_static",
  "opentelemetry 0.28.0",
  "opentelemetry-http 0.28.0",
+ "otlp-sigv4-client",
  "reqwest",
  "reqwest-middleware",
  "reqwest-tracing",
