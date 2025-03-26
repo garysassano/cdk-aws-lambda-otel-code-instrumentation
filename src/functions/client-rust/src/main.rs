@@ -1,80 +1,107 @@
-use aws_lambda_events::apigw::ApiGatewayV2httpRequest;
-use lambda_lw_http_router::{define_router, route};
-use lambda_otel_utils::{
-    HttpTracerProviderBuilder, OpenTelemetryFaasTrigger, OpenTelemetryLayer,
-    OpenTelemetrySubscriberBuilder,
-};
-use lambda_runtime::{service_fn, Error, LambdaEvent, Runtime};
-use reqwest::Client;
-use serde_json::{json, Value};
-use std::sync::Arc;
-
-// Define your application state
-#[derive(Clone)]
-struct AppState {
-    // your state fields here
+use aws_lambda_events::event::apigw::ApiGatewayV2httpRequest;
+use lambda_otel_lite::{OtelTracingLayer, TelemetryConfig, init_telemetry};
+use lambda_runtime::{Error, LambdaEvent, Runtime, tower::ServiceBuilder};
+use opentelemetry::trace::Status;
+use rand::Rng;
+use serde_json::Value;
+use std::borrow::Cow;
+use std::fmt::{self, Display};
+use tracing::{error, info, instrument};
+use tracing_opentelemetry::OpenTelemetrySpanExt;
+// Define error type as a simple enum
+#[derive(Debug)]
+enum ErrorType {
+    Expected,
+    Unexpected,
 }
 
-// Set up the router
-define_router!(event = ApiGatewayV2httpRequest, state = AppState);
-
-// Define route handlers
-#[route(path = "/")]
-async fn handle_root(_ctx: RouteContext) -> Result<Value, Error> {
-    Ok(json!({
-        "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
-        "body": json!({
-            "message": "Hello from Lambda!"
-        })
-    }))
-}
-#[route(path = "/hello/{name}")]
-async fn handle_hello(ctx: RouteContext) -> Result<Value, Error> {
-    let name = ctx.params.get("name").map(|s| s.as_str()).unwrap();
-    Ok(json!({
-        "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
-        "body": json!({
-            "message": format!("Hello, {}!", name)
-        })
-    }))
+impl Display for ErrorType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
-// Lambda function entrypoint
-#[tokio::main]
-async fn main() -> Result<(), Error> {
-    // Initialize tracer
-    let tracer_provider = HttpTracerProviderBuilder::default()
-        .with_http_client(Client::new())
-        .with_default_text_map_propagator()
-        .with_batch_exporter()
-        .enable_global(true)
-        .build()
-        .expect("Failed to build tracer provider");
+/// Simple nested function that creates its own span.
+#[instrument(skip(event), level = "info", err)]
+async fn nested_function(event: &ApiGatewayV2httpRequest) -> Result<String, ErrorType> {
+    info!("Nested function called");
 
-    // Initialize the OpenTelemetry subscriber
-    OpenTelemetrySubscriberBuilder::new()
-        .with_env_filter(true)
-        .with_tracer_provider(tracer_provider.clone())
-        .with_service_name("hello-world")
-        .with_json_format(true)
-        .init()?;
+    // Simulate random errors if the path is /error
+    if event.raw_path.as_deref() == Some("/error") {
+        let r: f64 = rand::rng().random();
+        if r < 0.25 {
+            return Err(ErrorType::Expected);
+        } else if r < 0.5 {
+            return Err(ErrorType::Unexpected);
+        }
+    }
 
-    let state = Arc::new(AppState {});
-    let router = Arc::new(RouterBuilder::from_registry().build());
+    Ok("success".to_string())
+}
 
-    let lambda = move |event: LambdaEvent<ApiGatewayV2httpRequest>| {
-        let state = Arc::clone(&state);
-        let router = Arc::clone(&router);
-        async move { router.handle_request(event, state).await }
-    };
-    let runtime = Runtime::new(service_fn(lambda)).layer(
-        OpenTelemetryLayer::new(|| {
-            tracer_provider.force_flush();
-        })
-        .with_trigger(OpenTelemetryFaasTrigger::Http),
+/// Simple Hello World Lambda function using lambda-otel-lite.
+///
+/// This example demonstrates basic OpenTelemetry setup with lambda-otel-lite.
+/// It creates spans for each invocation and logs the event payload using span events.
+async fn handler(event: LambdaEvent<ApiGatewayV2httpRequest>) -> Result<Value, Error> {
+    // Extract request ID from the event for correlation
+    let request_id = &event.context.request_id;
+    let current_span = tracing::Span::current();
+
+    // Set request ID as span attribute
+    current_span.set_attribute("request.id", request_id.to_string());
+
+    // Log the full event payload like in Python version
+    info!(
+        event = serde_json::to_string(&event.payload).unwrap_or_default(),
+        "handling request"
     );
 
+    // Call the nested function and handle potential errors
+    match nested_function(&event.payload).await {
+        Ok(_) => {
+            // Return a successful response
+            Ok(serde_json::json!({
+                "statusCode": 200,
+                "body": format!("Hello from request {}", request_id),
+                "headers": { "Content-Type": "text/plain" },
+            }))
+        }
+        Err(ErrorType::Expected) => {
+            // Log the error and return a 400 Bad Request
+            error!("Expected error occurred");
+
+            // Return a 400 Bad Request for expected errors
+            Ok(serde_json::json!({
+                "statusCode": 400,
+                "body": format!("{{\"message\": \"This is an expected error\"}}")
+            }))
+        }
+        Err(ErrorType::Unexpected) => {
+            // For other errors, propagate them up
+            error!("Unexpected error occurred");
+
+            // Set span status to ERROR like in Python version
+            current_span.set_status(Status::Error {
+                description: Cow::Borrowed("Unexpected error occurred"),
+            });
+
+            Err(Error::from("Unexpected error occurred"))
+        }
+    }
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Error> {
+    // Initialize telemetry with default configuration
+    let (_, completion_handler) = init_telemetry(TelemetryConfig::default()).await?;
+
+    // Build service with OpenTelemetry tracing middleware
+    let service = ServiceBuilder::new()
+        .layer(OtelTracingLayer::new(completion_handler).with_name("tower-handler"))
+        .service_fn(handler);
+
+    // Create and run the Lambda runtime
+    let runtime = Runtime::new(service);
     runtime.run().await
 }
