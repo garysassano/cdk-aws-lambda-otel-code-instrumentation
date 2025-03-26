@@ -7,7 +7,7 @@ import {
 } from "aws-lambda";
 import { SpanKind, SpanStatusCode, Span } from "@opentelemetry/api";
 import { z } from "zod";
-import { validateEnv } from "../../../utils/validate-env";
+import { validateEnv } from "../../utils/validate-env";
 
 //==============================================================================
 // LAMBDA INITIALIZATION (COLD START)

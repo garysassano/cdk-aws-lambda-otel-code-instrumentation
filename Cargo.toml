@@ -1,6 +1,8 @@
 [workspace]
 members = [
     "src/functions/client-rust",
+    "src/functions/forwarder",
+    "src/functions/service"
 ]
 
 resolver = "2"

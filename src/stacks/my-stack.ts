@@ -195,7 +195,7 @@ export class MyStack extends Stack {
       },
       bundling: {
         image: DockerImage.fromBuild(
-          join(__dirname, "..", "functions/client/python"),
+          join(__dirname, "..", "functions/client-python"),
         ),
         assetExcludes: ["Dockerfile"],
       },

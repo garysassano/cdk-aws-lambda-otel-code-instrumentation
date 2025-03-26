@@ -13,33 +13,34 @@ path = "src/backend/main.rs"
 
 [dependencies]
 # AWS Labs
-aws-config = { version = "1.5.11", features = ["behavior-version-latest"] }
-aws_lambda_events = { version = "0.16.0", default-features = false, features = ["apigw", "alb"] }
-aws-sdk-dynamodb = "1.56.0"
-lambda_runtime = { version = "0.13.0", features = ["anyhow", "tracing", "opentelemetry"] }
+aws-config = { workspace = true }
+aws_lambda_events = { workspace = true }
+aws-sdk-dynamodb = "1.43.0"
+lambda_runtime = { workspace = true }
 
 # Lambda Utils
-lambda-lw-http-router = "0.3.0"
-lambda-otel-utils = "0.3.0"
+lambda-lw-http-router = { workspace = true }
+lambda-otel-lite = { workspace = true }
 
 # OTel Instrumentation
-opentelemetry = { version = "0.27.1", features = ["trace"] }
-opentelemetry-http = "0.27.0"
-tracing-opentelemetry = "0.28.0"
+opentelemetry = { workspace = true }
+opentelemetry-http = { workspace = true }
+tracing-opentelemetry = { workspace = true }
 
 # Others
-anyhow = "1.0.94"
-async-trait = "0.1.83"
+anyhow = { workspace = true }
+async-trait = { workspace = true }
 chrono = { version = "0.4", features = ["serde"] }
-http = "1.2.0"
+http = { workspace = true }
 lazy_static = "1.5.0"
-reqwest = { version = "0.12.9", default-features = false, features = ["rustls-tls"] }
-reqwest-middleware = "0.4.0"
-reqwest-tracing = { version = "0.5.5" }
-serde = { version = "1.0", features = ["derive"] }
+reqwest = { workspace = true }
+reqwest-middleware = "0.4.1"
+reqwest-tracing = { version = "0.5.6", features = ["opentelemetry_0_27"] }
+serde = { workspace = true }
 serde_dynamo = { version = "4.2.14", features = ["aws-sdk-dynamodb+1"] }
-serde_json = "1.0.133"
+serde_json = { workspace = true }
 sha2 = "0.10.8"
 tera = "1.20.0"
-tokio = { version = "1", features = ["full"] }
-tracing = { version = "0.1", features = ["log"] }
+thiserror = "1.0.50"
+tokio = { workspace = true }
+tracing = { workspace = true }
