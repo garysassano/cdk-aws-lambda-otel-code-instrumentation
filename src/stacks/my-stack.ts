@@ -156,7 +156,7 @@ export class MyStack extends Stack {
     // Client Node Lambda
     const clientNodeLambda = new NodejsFunction(this, "ClientNodeLambda", {
       functionName: "client-node-lambda",
-      entry: join(__dirname, "..", "functions/client/node", "index.ts"),
+      entry: join(__dirname, "..", "functions/client-node", "index.ts"),
       runtime: Runtime.NODEJS_22_X,
       architecture: Architecture.ARM_64,
       memorySize: 1024,
@@ -180,7 +180,7 @@ export class MyStack extends Stack {
     // Client Python Lambda
     const clientPythonLambda = new PythonFunction(this, "ClientPythonLambda", {
       functionName: "client-python-lambda",
-      rootDir: join(__dirname, "..", "functions/client/python"),
+      rootDir: join(__dirname, "..", "functions/client-python"),
       runtime: Runtime.PYTHON_3_13,
       architecture: Architecture.ARM_64,
       memorySize: 1024,
@@ -213,7 +213,7 @@ export class MyStack extends Stack {
       manifestPath: join(
         __dirname,
         "..",
-        "functions/client/rust",
+        "functions/client-rust",
         "Cargo.toml",
       ),
       bundling: { cargoLambdaFlags: ["--quiet"] },
