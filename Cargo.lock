@@ -1836,9 +1836,9 @@ dependencies = [
 
 [[package]]
 name = "lambda-otel-lite"
-version = "0.10.2"
+version = "0.11.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcbbeb6219deb68309ac63b1fad372c4ebe3851eabf34ce9af760ca033dda0fb"
+checksum = "e4642c45526b0962ca0b8936a9e5851aad7775d4e889d29dbdfd89c07f818fd5"
 dependencies = [
  "aws_lambda_events",
  "bon",
@@ -1847,8 +1847,9 @@ dependencies = [
  "lambda-extension",
  "lambda_runtime",
  "opentelemetry 0.28.0",
+ "opentelemetry-aws",
  "opentelemetry_sdk 0.28.0",
- "otlp-stdout-span-exporter 0.10.1",
+ "otlp-stdout-span-exporter",
  "pin-project",
  "serde",
  "serde_json",
@@ -1881,7 +1882,7 @@ dependencies = [
  "opentelemetry-proto",
  "opentelemetry_sdk 0.28.0",
  "otlp-sigv4-client",
- "otlp-stdout-span-exporter 0.11.0",
+ "otlp-stdout-span-exporter",
  "prost",
  "regex",
  "reqwest",
@@ -1911,7 +1912,7 @@ dependencies = [
  "hyper 1.6.0",
  "hyper-util",
  "lambda_runtime_api_client",
- "opentelemetry-semantic-conventions",
+ "opentelemetry-semantic-conventions 0.14.0",
  "pin-project",
  "serde",
  "serde_json",
@@ -2193,6 +2194,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "opentelemetry-aws"
+version = "0.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b128be0f8e3e1f04e762572b484b0555c6a7410e299b181dd27727fd6fe5de0c"
+dependencies = [
+ "opentelemetry 0.28.0",
+ "opentelemetry-semantic-conventions 0.28.0",
+ "opentelemetry_sdk 0.28.0",
+ "tracing",
+]
+
+[[package]]
 name = "opentelemetry-http"
 version = "0.27.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2261,6 +2274,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f9ab5bd6c42fb9349dcf28af2ba9a0667f697f9bdcca045d39f2cec5543e2910"
 
 [[package]]
+name = "opentelemetry-semantic-conventions"
+version = "0.28.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2fb3a2f78c2d55362cd6c313b8abedfbc0142ab3c2676822068fd2ab7d51f9b7"
+
+[[package]]
 name = "opentelemetry_sdk"
 version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2318,29 +2337,9 @@ dependencies = [
 
 [[package]]
 name = "otlp-stdout-span-exporter"
-version = "0.10.1"
+version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "edac5d2b351bab9c8df3d4ddcd0b55e27cb9d7e7cb11319d9e130d7d52a3406e"
-dependencies = [
- "async-trait",
- "base64 0.22.1",
- "doc-comment",
- "flate2",
- "futures-util",
- "opentelemetry 0.28.0",
- "opentelemetry-proto",
- "opentelemetry_sdk 0.28.0",
- "prost",
- "serde",
- "serde_json",
- "tokio",
-]
-
-[[package]]
-name = "otlp-stdout-span-exporter"
-version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f51d47f6cf7e68002dbcce9899ecb1f98556dc48120a708e9a0e1fcba4b8466d"
+checksum = "b61cda687fff150ae2457069c06a38fe9f1168f5cdf1c81b3a9e70dfcc91b2ae"
 dependencies = [
  "async-trait",
  "base64 0.22.1",

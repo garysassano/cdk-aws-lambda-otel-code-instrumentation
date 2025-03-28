@@ -242,7 +242,7 @@ export class MyStack extends Stack {
       functionName: "forwarder-lambda",
       description: `Processes logs from AWS Account ${this.account}`,
       manifestPath: join(__dirname, "..", "functions/forwarder", "Cargo.toml"),
-      binaryName: "log_processor",
+      binaryName: "stdout_processor",
       bundling: { cargoLambdaFlags: ["--quiet"] },
       architecture: Architecture.ARM_64,
       memorySize: 128,

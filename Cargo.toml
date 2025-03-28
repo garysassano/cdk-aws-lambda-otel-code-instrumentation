@@ -21,11 +21,11 @@ futures-util = "0.3.31"
 tokio = { version = "1", features = ["full"] }
 
 # OpenTelemetry Unofficial
-lambda-otel-lite = "0.10.2"
+lambda-otel-lite = "0.11.4"
 lambda-lw-http-router = "0.3.0"
 otlp-sigv4-client = "0.10.0"
 otlp-stdout-client = "0.4.1"
-otlp-stdout-span-exporter = "0.11.0"
+otlp-stdout-span-exporter = "0.11.1"
 
 # OpenTelemetry Official
 opentelemetry = { version = "0.28.0", features = ["trace"] }
