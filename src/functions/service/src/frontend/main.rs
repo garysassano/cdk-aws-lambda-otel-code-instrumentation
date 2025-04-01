@@ -76,13 +76,10 @@ async fn get_all_quotes(
 ) -> Result<Value, LambdaError> {
     let target_url = format!("{}/quotes", target_url);
 
-    let request = client
-        .get(target_url.as_str())
-        .build()
-        .map_err(|e| format!("Failed to create request: {}", e))?;
-
+    // Use direct send() method instead of build() and execute() to allow middleware to inject headers
     let response = client
-        .execute(request)
+        .get(target_url.as_str())
+        .send()
         .await
         .map_err(|e| format!("Failed to execute request: {}", e))?;
 
@@ -123,13 +120,10 @@ async fn get_quote(
 ) -> Result<Value, QuoteError> {
     let target_url = format!("{}/quotes/{}", target_url, id);
 
-    let request = client
-        .get(target_url.as_str())
-        .build()
-        .map_err(|e| QuoteError::RequestError(format!("Failed to create request: {}", e)))?;
-
+    // Use direct send() method instead of build() and execute()
     let response = client
-        .execute(request)
+        .get(target_url.as_str())
+        .send()
         .await
         .map_err(|e| QuoteError::RequestError(format!("Failed to execute request: {}", e)))?;
 
@@ -219,7 +213,8 @@ async fn handle_root_redirect(_rctx: RouteContext) -> Result<Value, LambdaError>
         "statusCode": 301,
         "headers": {
             "Location": "/now",
-            "Content-Type": "text/html"
+            "Content-Type": "text/html",
+            "Cache-Control": "public, max-age=60"
         },
         "body": "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=/now\"></head><body>Redirecting to <a href=\"/now\">/now</a>...</body></html>"
     }))
@@ -240,7 +235,10 @@ async fn handle_home(rctx: RouteContext) -> Result<Value, LambdaError> {
         None => {
             return Ok(json!({
                 "statusCode": 404,
-                "headers": {"Content-Type": "text/plain"},
+                "headers": {
+                    "Content-Type": "text/plain",
+                    "Cache-Control": "public, max-age=60"
+                },
                 "body": "Invalid time frame"
             }));
         }
@@ -260,11 +258,7 @@ async fn handle_home(rctx: RouteContext) -> Result<Value, LambdaError> {
         .render("quotes.html", &tera_ctx)
         .map_err(|e| format!("Template rendering error: {}", e))?;
 
-    Ok(json!({
-        "statusCode": 200,
-        "headers": {"Content-Type": "text/html"},
-        "body": html_content
-    }))
+    Ok(html_response(200, html_content))
 }
 
 async fn get_and_process_quotes(
@@ -285,7 +279,7 @@ async fn get_and_process_quotes(
         .filter(|quote| {
             quote
                 .timestamp()
-                .map_or(false, |t| timeframe.is_quote_in_range(t))
+                .is_some_and(|t| timeframe.is_quote_in_range(t))
         })
         .collect::<Vec<_>>();
 
@@ -325,7 +319,10 @@ fn render_quotes_template(
 fn html_response(status_code: u16, html_content: String) -> Value {
     json!({
         "statusCode": status_code,
-        "headers": {"Content-Type": "text/html"},
+        "headers": {
+            "Content-Type": "text/html",
+            "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        },
         "body": html_content
     })
 }
