@@ -96,7 +96,7 @@ export class MyStack extends Stack {
     // Backend Lambda
     const backendLambda = new RustFunction(this, "BackendLambda", {
       functionName: "backend-lambda",
-      manifestPath: join(__dirname, "..", "functions/service", "Cargo.toml"),
+      manifestPath: join(__dirname, "../functions/service", "Cargo.toml"),
       binaryName: "backend",
       bundling: { cargoLambdaFlags: ["--quiet"] },
       architecture: Architecture.ARM_64,
@@ -112,7 +112,7 @@ export class MyStack extends Stack {
     // Frontend Lambda
     const frontendLambda = new RustFunction(this, "frontendLambda", {
       functionName: "frontend-lambda",
-      manifestPath: join(__dirname, "..", "functions/service", "Cargo.toml"),
+      manifestPath: join(__dirname, "../functions/service", "Cargo.toml"),
       binaryName: "frontend",
       bundling: { cargoLambdaFlags: ["--quiet"] },
       architecture: Architecture.ARM_64,
@@ -218,7 +218,7 @@ export class MyStack extends Stack {
     const forwarderLambda = new RustFunction(this, "ForwarderLambda", {
       functionName: "forwarder-lambda",
       description: `Processes logs from AWS Account ${this.account}`,
-      manifestPath: join(__dirname, "..", "functions/forwarder", "Cargo.toml"),
+      manifestPath: join(__dirname, "../functions/forwarder", "Cargo.toml"),
       binaryName: "stdout_processor",
       bundling: { cargoLambdaFlags: ["--quiet"] },
       architecture: Architecture.ARM_64,
