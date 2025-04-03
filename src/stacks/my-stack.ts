@@ -105,7 +105,6 @@ export class MyStack extends Stack {
       loggingFormat: LoggingFormat.JSON,
       environment: {
         TABLE_NAME: quotesTable.tableName,
-        OTEL_SERVICE_NAME: "backend-lambda",
       },
     });
     quotesTable.grantReadWriteData(backendLambda);
@@ -123,7 +122,6 @@ export class MyStack extends Stack {
       tracing: Tracing.ACTIVE,
       environment: {
         TARGET_URL: backendApi.url,
-        OTEL_SERVICE_NAME: "frontend-lambda",
       },
     });
     const frontendLambdaUrl = frontendLambda.addFunctionUrl({
@@ -158,7 +156,6 @@ export class MyStack extends Stack {
       loggingFormat: LoggingFormat.JSON,
       environment: {
         TARGET_URL: `${backendApi.url}quotes`,
-        OTEL_SERVICE_NAME: "client-node-lambda",
       },
     });
     new Schedule(this, "ClientNodeLambdaSchedule", {
@@ -179,7 +176,6 @@ export class MyStack extends Stack {
       loggingFormat: LoggingFormat.JSON,
       environment: {
         TARGET_URL: `${backendApi.url}quotes`,
-        OTEL_SERVICE_NAME: "client-python-lambda",
       },
       bundling: {
         image: DockerImage.fromBuild(
@@ -207,7 +203,6 @@ export class MyStack extends Stack {
       tracing: Tracing.ACTIVE,
       environment: {
         LAMBDA_EXTENSION_SPAN_PROCESSOR_MODE: "async",
-        OTEL_SERVICE_NAME: "client-rust-lambda",
       },
     });
     const clientRustLambdaUrl = clientRustLambda.addFunctionUrl({
