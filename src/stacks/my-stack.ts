@@ -122,6 +122,7 @@ export class MyStack extends Stack {
       tracing: Tracing.ACTIVE,
       environment: {
         TARGET_URL: backendApi.url,
+        LAMBDA_EXTENSION_SPAN_PROCESSOR_MODE: "async",
       },
     });
     const frontendLambdaUrl = frontendLambda.addFunctionUrl({
