@@ -210,7 +210,7 @@ export class MyStack extends Stack {
       timeout: Duration.minutes(1),
       loggingFormat: LoggingFormat.JSON,
       environment: {
-        LAMBDA_EXTENSION_SPAN_PROCESSORE_MODE: "async",
+        LAMBDA_EXTENSION_SPAN_PROCESSOR_MODE: "async",
         OTEL_SERVICE_NAME: "client-rust-lambda",
       },
     });
