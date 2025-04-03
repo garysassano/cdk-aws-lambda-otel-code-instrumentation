@@ -231,13 +231,13 @@ export class MyStack extends Stack {
       memorySize: 128,
       loggingFormat: LoggingFormat.JSON,
       environment: {
-        RUST_LOG: "info",
-        COLLECTORS_SECRETS_KEY_PREFIX,
-        COLLECTORS_CACHE_TTL_SECONDS: "300",
-        OTEL_SERVICE_NAME: "forwarder-lambda",
         OTEL_EXPORTER_OTLP_ENDPOINT,
         OTEL_EXPORTER_OTLP_HEADERS,
         OTEL_EXPORTER_OTLP_PROTOCOL,
+        COLLECTORS_CACHE_TTL_SECONDS: "300",
+        COLLECTORS_SECRETS_KEY_PREFIX,
+        LAMBDA_EXTENSION_SPAN_PROCESSOR_MODE: "async",
+        LAMBDA_TRACING_ENABLE_FMT_LAYER: "false",
       },
     });
     forwarderLambda.grantInvoke(new ServicePrincipal("logs.amazonaws.com"));
