@@ -39,7 +39,7 @@ import { validateEnv } from "../utils/validate-env";
 
 // Constants
 const OTEL_EXPORTER_OTLP_PROTOCOL = "http/protobuf";
-const OTEL_EXPORTER_OTLP_COMPRESSION = "gzip";
+// const OTEL_EXPORTER_OTLP_COMPRESSION = "gzip";
 const COLLECTORS_SECRETS_KEY_PREFIX = "serverless-otlp-forwarder/keys/";
 
 // Required environment variables
@@ -106,9 +106,6 @@ export class MyStack extends Stack {
         RUST_LOG: "info",
         TABLE_NAME: quotesTable.tableName,
         OTEL_SERVICE_NAME: "backend-lambda",
-        OTEL_EXPORTER_OTLP_ENDPOINT,
-        OTEL_EXPORTER_OTLP_PROTOCOL,
-        OTEL_EXPORTER_OTLP_COMPRESSION,
       },
     });
     quotesTable.grantReadWriteData(backendLambda);
@@ -127,9 +124,6 @@ export class MyStack extends Stack {
         RUST_LOG: "info",
         TARGET_URL: backendApi.url,
         OTEL_SERVICE_NAME: "frontend-lambda",
-        OTEL_EXPORTER_OTLP_ENDPOINT,
-        OTEL_EXPORTER_OTLP_PROTOCOL,
-        OTEL_EXPORTER_OTLP_COMPRESSION,
       },
     });
     const frontendLambdaUrl = frontendLambda.addFunctionUrl({
@@ -165,9 +159,6 @@ export class MyStack extends Stack {
       environment: {
         TARGET_URL: `${backendApi.url}quotes`,
         OTEL_SERVICE_NAME: "client-node-lambda",
-        OTEL_EXPORTER_OTLP_ENDPOINT,
-        OTEL_EXPORTER_OTLP_PROTOCOL,
-        OTEL_EXPORTER_OTLP_COMPRESSION,
       },
     });
     new Schedule(this, "ClientNodeLambdaSchedule", {
@@ -189,9 +180,6 @@ export class MyStack extends Stack {
       environment: {
         TARGET_URL: `${backendApi.url}quotes`,
         OTEL_SERVICE_NAME: "client-python-lambda",
-        OTEL_EXPORTER_OTLP_ENDPOINT,
-        OTEL_EXPORTER_OTLP_PROTOCOL,
-        OTEL_EXPORTER_OTLP_COMPRESSION,
       },
       bundling: {
         image: DockerImage.fromBuild(
@@ -222,11 +210,8 @@ export class MyStack extends Stack {
       timeout: Duration.minutes(1),
       loggingFormat: LoggingFormat.JSON,
       environment: {
-        RUST_LOG: "info",
+        LAMBDA_EXTENSION_SPAN_PROCESSORE_MODE: "async",
         OTEL_SERVICE_NAME: "client-rust-lambda",
-        OTEL_EXPORTER_OTLP_ENDPOINT,
-        OTEL_EXPORTER_OTLP_PROTOCOL,
-        OTEL_EXPORTER_OTLP_COMPRESSION,
       },
     });
     const clientRustLambdaUrl = clientRustLambda.addFunctionUrl({
