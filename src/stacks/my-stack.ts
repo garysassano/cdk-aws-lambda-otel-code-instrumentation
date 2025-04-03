@@ -104,7 +104,6 @@ export class MyStack extends Stack {
       timeout: Duration.minutes(1),
       loggingFormat: LoggingFormat.JSON,
       environment: {
-        RUST_LOG: "info",
         TABLE_NAME: quotesTable.tableName,
         OTEL_SERVICE_NAME: "backend-lambda",
       },
@@ -123,7 +122,6 @@ export class MyStack extends Stack {
       loggingFormat: LoggingFormat.JSON,
       tracing: Tracing.ACTIVE,
       environment: {
-        RUST_LOG: "info",
         TARGET_URL: backendApi.url,
         OTEL_SERVICE_NAME: "frontend-lambda",
       },
