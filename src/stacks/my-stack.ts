@@ -40,7 +40,6 @@ import { validateEnv } from "../utils/validate-env";
 
 // Constants
 const OTEL_EXPORTER_OTLP_PROTOCOL = "http/protobuf";
-// const OTEL_EXPORTER_OTLP_COMPRESSION = "gzip";
 const COLLECTORS_SECRETS_KEY_PREFIX = "serverless-otlp-forwarder/keys/";
 
 // Required environment variables
