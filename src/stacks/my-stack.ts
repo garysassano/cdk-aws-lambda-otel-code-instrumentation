@@ -21,6 +21,7 @@ import {
   FunctionUrlAuthType,
   LoggingFormat,
   Runtime,
+  Tracing,
 } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import {
@@ -120,6 +121,7 @@ export class MyStack extends Stack {
       memorySize: 128,
       timeout: Duration.minutes(1),
       loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
       environment: {
         RUST_LOG: "info",
         TARGET_URL: backendApi.url,
@@ -150,7 +152,7 @@ export class MyStack extends Stack {
     // Client Node Lambda
     const clientNodeLambda = new NodejsFunction(this, "ClientNodeLambda", {
       functionName: "client-node-lambda",
-      entry: join(__dirname, "..", "functions/client-node", "index.ts"),
+      entry: join(__dirname, "../functions/client-node", "index.ts"),
       runtime: Runtime.NODEJS_22_X,
       architecture: Architecture.ARM_64,
       memorySize: 1024,
@@ -171,7 +173,7 @@ export class MyStack extends Stack {
     // Client Python Lambda
     const clientPythonLambda = new PythonFunction(this, "ClientPythonLambda", {
       functionName: "client-python-lambda",
-      rootDir: join(__dirname, "..", "functions/client-python"),
+      rootDir: join(__dirname, "../functions/client-python"),
       runtime: Runtime.PYTHON_3_13,
       architecture: Architecture.ARM_64,
       memorySize: 1024,
@@ -183,7 +185,7 @@ export class MyStack extends Stack {
       },
       bundling: {
         image: DockerImage.fromBuild(
-          join(__dirname, "..", "functions/client-python"),
+          join(__dirname, "../functions/client-python"),
         ),
         assetExcludes: ["Dockerfile"],
       },
@@ -198,17 +200,13 @@ export class MyStack extends Stack {
     // Client Rust Lambda
     const clientRustLambda = new RustFunction(this, "ClientRustLambda", {
       functionName: "client-rust-lambda",
-      manifestPath: join(
-        __dirname,
-        "..",
-        "functions/client-rust",
-        "Cargo.toml",
-      ),
+      manifestPath: join(__dirname, "../functions/client-rust", "Cargo.toml"),
       bundling: { cargoLambdaFlags: ["--quiet"] },
       architecture: Architecture.ARM_64,
       memorySize: 1024,
       timeout: Duration.minutes(1),
       loggingFormat: LoggingFormat.JSON,
+      tracing: Tracing.ACTIVE,
       environment: {
         LAMBDA_EXTENSION_SPAN_PROCESSOR_MODE: "async",
         OTEL_SERVICE_NAME: "client-rust-lambda",
