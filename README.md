@@ -4,7 +4,7 @@ CDK app that demonstrates OpenTelemetry [code-based instrumentation](https://ope
 
 ### Related Apps
 
-- [cdk-aws-lambda-otel-auto-instrumentation](https://github.com/garysassano/cdk-aws-lambda-otel-auto-instrumentation) - Uses OpenTelemetry auto instrumentation instead of code.
+- [cdk-aws-otlp-forwarder-kinesis-lambda] - WIP
 - [serverless-otlp-forwarder](https://github.com/dev7a/serverless-otlp-forwarder) - Built with AWS SAM instead of CDK; this is what the app is based on.
 
 ## Prerequisites
