@@ -1,4 +1,4 @@
-# cdk-aws-lambda-otel-code-instrumentation
+# cdk-aws-otlp-forwarder-cwl-lambda
 
 CDK app that demonstrates OpenTelemetry [code-based instrumentation](https://opentelemetry.io/docs/concepts/instrumentation/code-based/) in AWS Lambda using several runtimes. Includes a forwarder that sends telemetry data via OTLP to any OTel-compatible vendor.
 
